@@ -8,6 +8,7 @@ Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.6/%{name}-%{version}.tar.x
 # Source0-md5:	5f2ef52abd8ba9a1069d4eb401f99f48
 Source1:	%{name}-password.pamd
 Source2:	%{name}-launch-environment.pamd
+Source3:	%{name}-autologin.pamd
 Source10:	%{name}.service
 Source11:	%{name}-tmpfiles.conf
 Patch1:		%{name}-defaults.patch
@@ -134,6 +135,7 @@ install -d $RPM_BUILD_ROOT/etc/pam.d \
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/gdm-password
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/pam.d/gdm-launch-environment
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/gdm-autologin
 install %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}/gdm.service
 install %{SOURCE11} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gdm.conf
 
@@ -176,9 +178,41 @@ fi
 %files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README TODO
+%attr(755,root,root) %{_bindir}/gdm-screenshot
+%attr(755,root,root) %{_bindir}/gdmflexiserver
+%attr(755,root,root) %{_sbindir}/gdm
+%attr(755,root,root) %{_sbindir}/gdm-binary
+
+%dir %{_libexecdir}
+%attr(755,root,root) %{_libexecdir}/gdm-crash-logger
+%attr(755,root,root) %{_libexecdir}/gdm-host-chooser
+%attr(755,root,root) %{_libexecdir}/gdm-session-worker
+%attr(755,root,root) %{_libexecdir}/gdm-simple-chooser
+%attr(755,root,root) %{_libexecdir}/gdm-simple-greeter
+%attr(755,root,root) %{_libexecdir}/gdm-simple-slave
+%attr(755,root,root) %{_libexecdir}/gdm-smartcard-worker
+%attr(755,root,root) %{_libexecdir}/gdm-xdmcp-chooser-slave
+
+%dir %{_libdir}/gdm/simple-greeter
+%dir %{_libdir}/gdm/simple-greeter/extensions
+%attr(755,root,root) %{_libdir}/gdm/simple-greeter/extensions/libpassword.so
+
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gdm/custom.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm-password
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm-launch-environment
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm-autologin
+
+
+%dir %{_sysconfdir}/gdm
+%dir %{_sysconfdir}/gdm/Init
+%dir %{_sysconfdir}/gdm/PostLogin
+%attr(755,root,root) %config %{_sysconfdir}/gdm/Init/Default
+%attr(755,root,root) %config %{_sysconfdir}/gdm/PostSession
+%attr(755,root,root) %config %{_sysconfdir}/gdm/PreSession
+%attr(755,root,root) %config %{_sysconfdir}/gdm/Xsession
+
+%{_sysconfdir}/dconf/db/gdm.d
+%{_sysconfdir}/dconf/profile/gdm
 
 %attr(1755,root,xdm) %dir /var/cache/gdm
 %attr(1770,root,xdm) %dir /var/gdm
@@ -189,45 +223,17 @@ fi
 %attr(755,xdm,xdm) %dir /var/lib/gdm/.config/dconf
 %attr(755,xdm,xdm) %dir /var/run/gdm/greeter
 %attr(755,xdm,xdm) /var/lib/gdm/.local
-%dir %{_libdir}/gdm/simple-greeter
-%dir %{_libdir}/gdm/simple-greeter/extensions
-%dir %{_sysconfdir}/gdm
-%dir %{_sysconfdir}/gdm/Init
-%dir %{_sysconfdir}/gdm/PostLogin
 %dir /var/lib/gdm/.config
 
-%attr(755,root,root) %config %{_sysconfdir}/gdm/Init/Default
-%attr(755,root,root) %config %{_sysconfdir}/gdm/PostSession
-%attr(755,root,root) %config %{_sysconfdir}/gdm/PreSession
-%attr(755,root,root) %config %{_sysconfdir}/gdm/Xsession
-
-%attr(755,root,root) %{_bindir}/gdm-screenshot
-%attr(755,root,root) %{_bindir}/gdmflexiserver
-#%attr(755,root,root) %{_libdir}/gdm/simple-greeter/extensions/libfingerprint.so
-%attr(755,root,root) %{_libdir}/gdm/simple-greeter/extensions/libpassword.so
-#%attr(755,root,root) %{_libdir}/gdm/simple-greeter/extensions/libsmartcard.so
-%dir %{_libexecdir}
-%attr(755,root,root) %{_libexecdir}/gdm-crash-logger
-%attr(755,root,root) %{_libexecdir}/gdm-session-worker
-%attr(755,root,root) %{_libexecdir}/gdm-simple-greeter
-%attr(755,root,root) %{_libexecdir}/gdm-simple-slave
-%attr(755,root,root) %{_libexecdir}/gdm-smartcard-worker
-# XDMCP
-%attr(755,root,root) %{_libexecdir}/gdm-host-chooser
-%attr(755,root,root) %{_libexecdir}/gdm-simple-chooser
-%attr(755,root,root) %{_libexecdir}/gdm-xdmcp-chooser-slave
-
-%attr(755,root,root) %{_sbindir}/gdm
-%attr(755,root,root) %{_sbindir}/gdm-binary
 %config(noreplace) %verify(not md5 mtime size) /etc/dbus-1/system.d/*
+
 %{_datadir}/gdm
 %{_datadir}/glib-2.0/schemas/org.gnome.login-screen.gschema.xml
 %{_datadir}/gnome-session/sessions/gdm-fallback.session
 %{_datadir}/gnome-session/sessions/gdm-shell.session
 %{_iconsdir}/hicolor/*/apps/*.png
 %{_pixmapsdir}/*
-%{_sysconfdir}/dconf/db/gdm.d
-%{_sysconfdir}/dconf/profile/gdm
+
 %{systemdtmpfilesdir}/%{name}.conf
 %{systemdunitdir}/gdm.service
 
