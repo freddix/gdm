@@ -1,11 +1,11 @@
 Summary:	GNOME Display Manager
 Name:		gdm
-Version:	3.6.2
+Version:	3.8.0
 Release:	1
 License:	GPL/LGPL
 Group:		X11/Applications
-Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.6/%{name}-%{version}.tar.xz
-# Source0-md5:	b1924268d1515b8b947acbbe49d72292
+Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.8/%{name}-%{version}.tar.xz
+# Source0-md5:	58d910c1d4c225d2403a737f8fc55fd3
 Source1:	%{name}-password.pamd
 Source2:	%{name}-launch-environment.pamd
 Source3:	%{name}-autologin.pamd
@@ -139,7 +139,7 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/gdm-autologin
 install %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}/gdm.service
 install %{SOURCE11} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gdm.conf
 
-%find_lang %{name} --with-gnome --with-omf --all-name
+%find_lang %{name} --with-gnome --all-name
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/gdm/simple-greeter/extensions/*.la
 
@@ -181,10 +181,8 @@ fi
 %attr(755,root,root) %{_bindir}/gdm-screenshot
 %attr(755,root,root) %{_bindir}/gdmflexiserver
 %attr(755,root,root) %{_sbindir}/gdm
-%attr(755,root,root) %{_sbindir}/gdm-binary
 
 %dir %{_libexecdir}
-%attr(755,root,root) %{_libexecdir}/gdm-crash-logger
 %attr(755,root,root) %{_libexecdir}/gdm-host-chooser
 %attr(755,root,root) %{_libexecdir}/gdm-session-worker
 %attr(755,root,root) %{_libexecdir}/gdm-simple-chooser
