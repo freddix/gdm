@@ -1,7 +1,7 @@
 Summary:	GNOME Display Manager
 Name:		gdm
 Version:	3.8.4
-Release:	1
+Release:	2
 License:	GPL/LGPL
 Group:		X11/Applications
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.8/%{name}-%{version}.tar.xz
