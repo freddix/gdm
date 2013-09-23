@@ -1,6 +1,7 @@
+#%PAM-1.0
 auth       required     pam_permit.so
-
-account    include      common-account
+auth       required     pam_env.so
+auth       required     pam_env.so envfile=/etc/locale.conf
+account    required     pam_permit.so
 password   include      common-password
 session    include      common-session
-

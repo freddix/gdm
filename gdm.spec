@@ -1,7 +1,7 @@
 Summary:	GNOME Display Manager
 Name:		gdm
 Version:	3.8.4
-Release:	2
+Release:	3
 License:	GPL/LGPL
 Group:		X11/Applications
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.8/%{name}-%{version}.tar.xz
@@ -107,6 +107,7 @@ touch data/gdm.schemas.in.in
 %configure \
 	--disable-schemas-compile		\
 	--disable-silent-rules			\
+	--disable-split-authentication		\
 	--disable-static			\
 	--enable-authentication-scheme=pam	\
 	--with-at-spi-registryd-directory=%{_libdir}/at-spi2		\
@@ -114,7 +115,9 @@ touch data/gdm.schemas.in.in
 	--with-check-accelerated-directory=%{_libdir}/gnome-session	\
 	--with-console-kit=no			\
 	--with-group=xdm			\
+	--with-initial-vt=1			\
 	--with-pam-prefix=/etc			\
+	--with-run-dir=/run/gdm			\
 	--with-systemd				\
 	--with-tcp-wrappers=no			\
 	--with-user=xdm				\
@@ -133,15 +136,13 @@ install -d $RPM_BUILD_ROOT/etc/pam.d \
 	DESTDIR=$RPM_BUILD_ROOT \
 	PAM_PREFIX=%{_sysconfdir}
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/gdm-password
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/gdm
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/pam.d/gdm-launch-environment
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/gdm-autologin
 install %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}/gdm.service
 install %{SOURCE11} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gdm.conf
 
 %find_lang %{name} --with-gnome --all-name
-
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/gdm/simple-greeter/extensions/*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -188,18 +189,12 @@ fi
 %attr(755,root,root) %{_libexecdir}/gdm-simple-chooser
 %attr(755,root,root) %{_libexecdir}/gdm-simple-greeter
 %attr(755,root,root) %{_libexecdir}/gdm-simple-slave
-%attr(755,root,root) %{_libexecdir}/gdm-smartcard-worker
 %attr(755,root,root) %{_libexecdir}/gdm-xdmcp-chooser-slave
 
-%dir %{_libdir}/gdm/simple-greeter
-%dir %{_libdir}/gdm/simple-greeter/extensions
-%attr(755,root,root) %{_libdir}/gdm/simple-greeter/extensions/libpassword.so
-
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gdm/custom.conf
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm-password
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm-launch-environment
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm-autologin
-
 
 %dir %{_sysconfdir}/gdm
 %dir %{_sysconfdir}/gdm/Init
@@ -215,11 +210,9 @@ fi
 %attr(1755,root,xdm) %dir /var/cache/gdm
 %attr(1770,root,xdm) %dir /var/gdm
 %attr(1770,root,xdm) %dir /var/lib/gdm
-%attr(711,root,xdm) %dir /var/run/gdm
 %attr(750,xdm,xdm) %dir /var/log/gdm
 %attr(750,xdm,xdm) /home/services/xdm
 %attr(755,xdm,xdm) %dir /var/lib/gdm/.config/dconf
-%attr(755,xdm,xdm) %dir /var/run/gdm/greeter
 %attr(755,xdm,xdm) /var/lib/gdm/.local
 %dir /var/lib/gdm/.config
 
