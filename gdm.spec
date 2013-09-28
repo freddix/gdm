@@ -1,19 +1,18 @@
 Summary:	GNOME Display Manager
 Name:		gdm
-Version:	3.8.4
-Release:	3
+Version:	3.10.0
+Release:	2
 License:	GPL/LGPL
 Group:		X11/Applications
-Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.8/%{name}-%{version}.tar.xz
-# Source0-md5:	e24ddcaa4802ee948109cde52f96989a
+Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.10/%{name}-%{version}.tar.xz
+# Source0-md5:	fe232e87c19164c98ecb004f626b070b
 Source1:	%{name}-password.pamd
 Source2:	%{name}-launch-environment.pamd
 Source3:	%{name}-autologin.pamd
 Source10:	%{name}.service
 Source11:	%{name}-tmpfiles.conf
-Patch1:		%{name}-defaults.patch
-Patch2:		%{name}-sh.patch
-Patch3:		%{name}-path.patch
+Patch0:		%{name}-defaults.patch
+Patch1:		%{name}-path.patch
 URL:		http://www.gnome.org/projects/gdm/
 BuildRequires:	accountsservice-devel
 BuildRequires:	attr-devel
@@ -91,9 +90,8 @@ using GDM's libraries.
 
 %prep
 %setup -q
+%patch0 -p1
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 touch data/gdm.schemas.in.in
@@ -137,6 +135,7 @@ install -d $RPM_BUILD_ROOT/etc/pam.d \
 	PAM_PREFIX=%{_sysconfdir}
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/gdm
+ln -sf /etc/pam.d/gdm-password $RPM_BUILD_ROOT/etc/pam.d/gdm-password
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/pam.d/gdm-launch-environment
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/gdm-autologin
 install %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}/gdm.service
@@ -187,14 +186,14 @@ fi
 %attr(755,root,root) %{_libexecdir}/gdm-host-chooser
 %attr(755,root,root) %{_libexecdir}/gdm-session-worker
 %attr(755,root,root) %{_libexecdir}/gdm-simple-chooser
-%attr(755,root,root) %{_libexecdir}/gdm-simple-greeter
 %attr(755,root,root) %{_libexecdir}/gdm-simple-slave
 %attr(755,root,root) %{_libexecdir}/gdm-xdmcp-chooser-slave
 
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gdm/custom.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm-launch-environment
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm-autologin
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm-launch-environment
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm-password
 
 %dir %{_sysconfdir}/gdm
 %dir %{_sysconfdir}/gdm/Init
@@ -208,7 +207,6 @@ fi
 %{_sysconfdir}/dconf/profile/gdm
 
 %attr(1755,root,xdm) %dir /var/cache/gdm
-%attr(1770,root,xdm) %dir /var/gdm
 %attr(1770,root,xdm) %dir /var/lib/gdm
 %attr(750,xdm,xdm) %dir /var/log/gdm
 %attr(750,xdm,xdm) /home/services/xdm
@@ -220,7 +218,6 @@ fi
 
 %{_datadir}/gdm
 %{_datadir}/glib-2.0/schemas/org.gnome.login-screen.gschema.xml
-%{_datadir}/gnome-session/sessions/gdm-fallback.session
 %{_datadir}/gnome-session/sessions/gdm-shell.session
 %{_iconsdir}/hicolor/*/apps/*.png
 %{_pixmapsdir}/*
