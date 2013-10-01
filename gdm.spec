@@ -54,9 +54,7 @@ Requires:	dbus-launch
 Requires:	gnome-session
 Requires:	gnome-settings-daemon
 Requires:	hicolor-icon-theme
-Requires:	metacity
 Requires:	pam
-Requires:	polkit-gnome
 Requires:	which
 Requires:	xorg-app-sessreg
 Requires:	xorg-xserver-server
@@ -135,7 +133,7 @@ install -d $RPM_BUILD_ROOT/etc/pam.d \
 	PAM_PREFIX=%{_sysconfdir}
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/gdm
-ln -sf /etc/pam.d/gdm-password $RPM_BUILD_ROOT/etc/pam.d/gdm-password
+ln -sf gdm $RPM_BUILD_ROOT/etc/pam.d/gdm-password
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/pam.d/gdm-launch-environment
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/pam.d/gdm-autologin
 install %{SOURCE10} $RPM_BUILD_ROOT%{systemdunitdir}/gdm.service
