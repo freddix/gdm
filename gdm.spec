@@ -1,18 +1,17 @@
 Summary:	GNOME Display Manager
 Name:		gdm
-Version:	3.10.0.1
+Version:	3.12.0
 Release:	1
 License:	GPL/LGPL
 Group:		X11/Applications
-Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.10/%{name}-%{version}.tar.xz
-# Source0-md5:	010a8615d7ee99d59494641a7201957e
+Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.12/%{name}-%{version}.tar.xz
+# Source0-md5:	67922d0fecd9a5cad0601f9b93106f83
 Source1:	%{name}-password.pamd
 Source2:	%{name}-launch-environment.pamd
 Source3:	%{name}-autologin.pamd
 Source10:	%{name}.service
 Source11:	%{name}-tmpfiles.conf
 Patch0:		%{name}-defaults.patch
-Patch1:		%{name}-path.patch
 URL:		http://www.gnome.org/projects/gdm/
 BuildRequires:	accountsservice-devel
 BuildRequires:	attr-devel
@@ -20,9 +19,9 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	check
 BuildRequires:	dbus-glib-devel
+BuildRequires:	dconf >= 0.20.0
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel
-BuildRequires:	gnome-doc-utils
 BuildRequires:	gtk+3-devel
 BuildRequires:	intltool
 BuildRequires:	iso-codes
@@ -35,7 +34,6 @@ BuildRequires:	pango-devel
 BuildRequires:	perl-modules
 BuildRequires:	pkg-config
 BuildRequires:	polkit-devel
-BuildRequires:  systemd-devel
 BuildRequires:	upower-devel
 BuildRequires:	xorg-libX11-devel
 BuildRequires:	xorg-libXau-devel
@@ -44,6 +42,7 @@ BuildRequires:	xorg-libXft-devel
 BuildRequires:	xorg-libXi-devel
 BuildRequires:	xorg-libXinerama-devel
 BuildRequires:	xorg-libXrandr-devel
+BuildRequires:  systemd-devel
 Requires(post,postun):	/usr/bin/gtk-update-icon-cache
 Requires(post,postun):	glib-gio-gsettings
 Requires(post,preun,postun):	systemd-units
@@ -89,7 +88,6 @@ using GDM's libraries.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 touch data/gdm.schemas.in.in
@@ -110,6 +108,7 @@ touch data/gdm.schemas.in.in
 	--with-authentication-agent-directory=%{_libdir}/polkit-1	\
 	--with-check-accelerated-directory=%{_libdir}/gnome-session	\
 	--with-console-kit=no			\
+	--with-gnome-settings-daemon-directory=%{_libdir}/gnome-settings-daemon-3.0 \
 	--with-group=xdm			\
 	--with-initial-vt=1			\
 	--with-pam-prefix=/etc			\
@@ -184,8 +183,6 @@ fi
 %attr(755,root,root) %{_libexecdir}/gdm-host-chooser
 %attr(755,root,root) %{_libexecdir}/gdm-session-worker
 %attr(755,root,root) %{_libexecdir}/gdm-simple-chooser
-%attr(755,root,root) %{_libexecdir}/gdm-simple-slave
-%attr(755,root,root) %{_libexecdir}/gdm-xdmcp-chooser-slave
 
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gdm/custom.conf
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/gdm
@@ -201,16 +198,13 @@ fi
 %attr(755,root,root) %config %{_sysconfdir}/gdm/PreSession
 %attr(755,root,root) %config %{_sysconfdir}/gdm/Xsession
 
-%{_sysconfdir}/dconf/db/gdm.d
-%{_sysconfdir}/dconf/profile/gdm
+%{_datadir}/dconf/profile/gdm
 
 %attr(1755,root,xdm) %dir /var/cache/gdm
 %attr(1770,root,xdm) %dir /var/lib/gdm
 %attr(750,xdm,xdm) %dir /var/log/gdm
 %attr(750,xdm,xdm) /home/services/xdm
-%attr(755,xdm,xdm) %dir /var/lib/gdm/.config/dconf
 %attr(755,xdm,xdm) /var/lib/gdm/.local
-%dir /var/lib/gdm/.config
 
 %config(noreplace) %verify(not md5 mtime size) /etc/dbus-1/system.d/*
 
