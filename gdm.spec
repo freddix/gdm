@@ -1,11 +1,11 @@
 Summary:	GNOME Display Manager
 Name:		gdm
-Version:	3.12.1
+Version:	3.14.0
 Release:	1
 License:	GPL/LGPL
 Group:		X11/Applications
-Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.12/%{name}-%{version}.tar.xz
-# Source0-md5:	18807aeb082ac3d8def5bbddac9c620b
+Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.14/%{name}-%{version}.tar.xz
+# Source0-md5:	fc9a89708be90b3de1c22b05535310cd
 Source1:	%{name}-password.pamd
 Source2:	%{name}-launch-environment.pamd
 Source3:	%{name}-autologin.pamd
@@ -19,7 +19,7 @@ BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	check
 BuildRequires:	dbus-glib-devel
-BuildRequires:	dconf >= 0.20.0
+BuildRequires:	dconf
 BuildRequires:	docbook-dtd412-xml
 BuildRequires:	gettext-devel
 BuildRequires:	gtk+3-devel
@@ -130,6 +130,8 @@ install -d $RPM_BUILD_ROOT/etc/pam.d \
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
 	PAM_PREFIX=%{_sysconfdir}
+
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/pam.d/gdm
 ln -sf gdm $RPM_BUILD_ROOT/etc/pam.d/gdm-password
