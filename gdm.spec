@@ -1,11 +1,11 @@
 Summary:	GNOME Display Manager
 Name:		gdm
-Version:	3.14.0
+Version:	3.14.1
 Release:	1
 License:	GPL/LGPL
 Group:		X11/Applications
 Source0:	http://ftp.gnome.org/pub/GNOME/sources/gdm/3.14/%{name}-%{version}.tar.xz
-# Source0-md5:	fc9a89708be90b3de1c22b05535310cd
+# Source0-md5:	6ebb3c1a694c58651f3e1116ff3f542d
 Source1:	%{name}-password.pamd
 Source2:	%{name}-launch-environment.pamd
 Source3:	%{name}-autologin.pamd
